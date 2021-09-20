@@ -1,24 +1,40 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { 
+    View, 
+    Text, 
+    StyleSheet, 
+    Button, 
+    ScrollView,
+    Image
+} from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 
 import { MEALS } from '../data/dummy-data';
 import CusstomHeaderButton from '../components/CustomHeaderButton';
+import DefaultText from '../components/DefaultText';
+import ListItem from '../components/ListItem';
 
 const MealDetailScreen = props => {
     const mealId = props.navigation.getParam('mealId');
     const selectedMeal = MEALS.find(meal => meal.id === mealId);
 
     return (
-        <View style={styles.screen} >
-            <View>
-                <Text>{selectedMeal.title}</Text>
+        <ScrollView>
+            <Image source={{uri: selectedMeal.imageUrl}} style={styles.image} />
+            <View style={styles.details}>
+                <DefaultText>{selectedMeal.duration}m</DefaultText>
+                <DefaultText>{selectedMeal.complexity}</DefaultText>
+                <DefaultText>{selectedMeal.affordability}</DefaultText>
             </View>
-            <Button title="BACK" onPress={() => {
-                    props.navigation.popToTop()
-                }} 
-            />
-        </View>
+            <Text style={styles.title}>Ingredients</Text>
+            { selectedMeal.ingrediants.map(ingrediant => 
+                <ListItem key={ingrediant} >{ingrediant}</ListItem>
+            )}
+            <Text style={styles.title}>Steps</Text>
+            { selectedMeal.steps.map(step => 
+                <ListItem key={step} >{step}</ListItem>
+            )}
+        </ScrollView>
     );
 };
 
@@ -40,10 +56,23 @@ MealDetailScreen.navigationOptions = (navigationData) => {
 }
 
 const styles = StyleSheet.create({
-    screen: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+    image: {
+        width: '100%',
+        height: 200
+    },
+    details: {
+        flexDirection: 'row',
+        padding: 15,
+        justifyContent: 'space-around',
+        borderColor: '#ccc',
+        borderWidth: 1,
+        backgroundColor: 'white'
+    },
+    title: {
+        fontFamily: 'open-sans-bold',
+        fontSize: 18,
+        textAlign: 'center',
+        marginVertical: 20
     }
 });
 
